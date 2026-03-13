@@ -269,7 +269,7 @@ header{position:fixed;top:0;left:0;right:0;height:var(--hh);z-index:100;backgrou
 /* ── MODAL ── */
 .m-ov{position:fixed;inset:0;background:rgba(0,0,0,.28);backdrop-filter:blur(4px);z-index:2000;display:flex;align-items:flex-end;justify-content:center;animation:fi .16s ease;padding-bottom:env(safe-area-inset-bottom,0);}
 @keyframes fi{from{opacity:0}to{opacity:1}}
-.modal{background:var(--white);border-radius:var(--r2) var(--r2) 0 0;padding:22px 20px 38px;width:100%;max-width:520px;box-shadow:0 -8px 40px rgba(0,0,0,.1);animation:su .22s cubic-bezier(.3,0,.1,1) both;max-height:85vh;overflow-y:auto;-webkit-overflow-scrolling:touch;position:relative;z-index:1001;}
+.modal{background:var(--white);border-radius:var(--r2) var(--r2) 0 0;padding:22px 20px 38px;width:100%;max-width:520px;box-shadow:0 -8px 40px rgba(0,0,0,.1);animation:su .22s cubic-bezier(.3,0,.1,1) both;max-height:92vh;overflow-y:auto;-webkit-overflow-scrolling:touch;position:relative;z-index:1001;}
 @keyframes su{from{transform:translateY(18px);opacity:0}to{transform:none;opacity:1}}
 .m-handle{width:34px;height:3px;background:var(--line2);border-radius:2px;margin:0 auto 18px;}
 .m-title{font-family:'Noto Serif TC',serif;font-weight:400;font-size:16px;color:var(--ink);margin-bottom:18px;letter-spacing:.04em;}
@@ -1073,7 +1073,8 @@ const tzOpts=TIMEZONES.map(t=>`<option value="${t.code}">${t.label}</option>`).j
 function openNewTripModal(){
   openModal('新增旅程',`
     <div class="fg"><label class="fl">旅程名稱</label><input class="fi" id="fn" placeholder="例如：紐西蘭南島"/></div>
-    <div class="fr2"><div class="fg"><label class="fl">出發日期</label><input class="fi" id="fs" type="date"/></div><div class="fg"><label class="fl">結束日期</label><input class="fi" id="fe" type="date"/></div></div>
+    <div class="fg"><label class="fl">出發日期</label><input class="fi" id="fs" type="date" style="min-height:48px;font-size:16px"/></div>
+    <div class="fg"><label class="fl">結束日期</label><input class="fi" id="fe" type="date" style="min-height:48px;font-size:16px"/></div>
     <div class="fg"><label class="fl">目的地時區</label><select class="fi" id="ftz">${tzOpts}</select></div>
     <div class="fa"><button class="bg_" onclick="closeModal()">取消</button><button class="bp" onclick="submitNewTrip()">建立</button></div>`);
 }
@@ -1088,7 +1089,8 @@ window.openEditTripModal=()=>{
   const tzO=TIMEZONES.map(z=>`<option value="${z.code}" ${z.code===(t.timezone||'Asia/Taipei')?'selected':''}>${z.label}</option>`).join('');
   openModal('編輯旅程',`
     <div class="fg"><label class="fl">旅程名稱</label><input class="fi" id="fn" value="${esc(t.name)}"/></div>
-    <div class="fr2"><div class="fg"><label class="fl">出發日期</label><input class="fi" id="fs" type="date" value="${t.startDate||''}"/></div><div class="fg"><label class="fl">結束日期</label><input class="fi" id="fe" type="date" value="${t.endDate||''}"/></div></div>
+    <div class="fg"><label class="fl">出發日期</label><input class="fi" id="fs" type="date" value="${t.startDate||''}" style="min-height:48px;font-size:16px"/></div>
+    <div class="fg"><label class="fl">結束日期</label><input class="fi" id="fe" type="date" value="${t.endDate||''}" style="min-height:48px;font-size:16px"/></div>
     <div class="fg"><label class="fl">目的地時區</label><select class="fi" id="ftz">${tzO}</select></div>
     <div class="fg"><label class="fl">天氣城市（英文）</label><input class="fi" id="fwc" value="${esc(t.wxCity||'')}" placeholder="例如：Auckland"/></div>
     <div class="fa"><button class="bg_" onclick="closeModal()">取消</button><button class="bp" onclick="submitEditTrip()">儲存</button></div>`);
@@ -1101,6 +1103,9 @@ window.submitEditTrip=()=>{
   t.timezone=document.getElementById('ftz').value;
   const wc=document.getElementById('fwc').value.trim();
   if(wc!==t.wxCity){t.wxCity=wc;if(wc)fetchWeather(wc,t.id);}
+  // Reset day index if it's now out of range
+  const dc=dCnt(t.startDate,t.endDate);
+  if(S.day>=dc)S.day=0;
   save();window.closeModal();
 };
 window.openAddEv=()=>{
@@ -1168,7 +1173,7 @@ window.openAddBooking=()=>{
     <div class="fg"><label class="fl">標題</label><input class="fi" id="bkt" placeholder="例如：釜山航空 BX796"/></div>
     <div class="fr2">
       <div class="fg"><label class="fl">確認碼 / 訂單號</label><input class="fi" id="bkc" placeholder="例如：ABC123"/></div>
-      <div class="fg"><label class="fl">日期</label><input class="fi" id="bkd" type="date"/></div>
+      <div class="fg"><label class="fl">日期</label><input class="fi" id="bkd" type="date" style="min-height:48px;font-size:16px"/></div>
     </div>
     <div class="fg"><label class="fl">詳細資訊</label><textarea class="fi fi-ta" id="bkdt" placeholder="例如：KHH 15:00 → PUS 18:25"></textarea></div>
     <div class="fr2">
@@ -1195,7 +1200,7 @@ window.openEditBooking=(id)=>{
     <div class="fg"><label class="fl">標題</label><input class="fi" id="bkt" value="${esc(b.title)}"/></div>
     <div class="fr2">
       <div class="fg"><label class="fl">確認碼 / 訂單號</label><input class="fi" id="bkc" value="${esc(b.conf||'')}"/></div>
-      <div class="fg"><label class="fl">日期</label><input class="fi" id="bkd" type="date" value="${b.date||''}"/></div>
+      <div class="fg"><label class="fl">日期</label><input class="fi" id="bkd" type="date" value="${b.date||''}" style="min-height:48px;font-size:16px"/></div>
     </div>
     <div class="fg"><label class="fl">詳細資訊</label><textarea class="fi fi-ta" id="bkdt">${esc(b.detail||'')}</textarea></div>
     <div class="fr2">
