@@ -168,17 +168,7 @@ header{position:fixed;top:0;left:0;right:0;height:var(--hh);z-index:100;backgrou
 .tag-o{background:var(--bg2);color:var(--ink3);}
 .tl-acts{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap;opacity:0;transition:opacity .15s;}
 .tl-card:hover .tl-acts{opacity:1;}
-/* three-dot menu */
-.tl-menu-btn{background:none;border:none;cursor:pointer;color:var(--ink4);padding:4px 5px;border-radius:6px;line-height:1;transition:all .15s;display:flex;align-items:center;}
-.tl-menu-btn:hover,.tl-menu-btn.open{color:var(--ink2);background:var(--bg);}
-.tl-menu-pop{position:fixed;background:var(--white);border:1px solid var(--line2);border-radius:10px;box-shadow:0 4px 24px rgba(0,0,0,.15);z-index:500;min-width:140px;overflow:hidden;display:none;}
-.tl-menu-pop.open{display:block;}
-.tl-menu-item{display:flex;align-items:center;gap:8px;padding:11px 15px;font-size:13px;color:var(--ink2);cursor:pointer;font-family:'Noto Sans TC',sans-serif;border:none;background:none;width:100%;text-align:left;transition:background .1s;}
-.tl-menu-item:hover{background:var(--bg);}
-.tl-menu-item.danger{color:var(--rust);}
-.tl-menu-item.danger:hover{background:var(--rust-lt);}
-/* mobile drag ghost */
-.tl-drag-ghost{opacity:.5;border:2px dashed var(--sage);border-radius:var(--r2);}
+@media(pointer:coarse){.tl-acts{opacity:1!important;}}
 .add-ev{width:100%;padding:13px 15px;background:none;border:1.5px dashed var(--line2);border-radius:var(--r2);color:var(--ink4);font-size:13px;cursor:pointer;font-family:'Noto Sans TC',sans-serif;transition:all .15s;margin-top:8px;text-align:left;}
 .add-ev:hover{border-color:var(--sage);color:var(--sage-dk);background:var(--sage-lt);}
 .day-theme-bar{display:flex;align-items:center;gap:8px;margin-bottom:16px;}
@@ -277,9 +267,9 @@ header{position:fixed;top:0;left:0;right:0;height:var(--hh);z-index:100;backgrou
 .no-settle{text-align:center;padding:14px;color:var(--sage-dk);background:var(--sage-lt);border-radius:var(--r);font-size:13px;}
 
 /* ── MODAL ── */
-.m-ov{position:fixed;inset:0;background:rgba(0,0,0,.28);backdrop-filter:blur(4px);z-index:1000;display:flex;align-items:flex-end;justify-content:center;animation:fi .16s ease;}
+.m-ov{position:fixed;inset:0;background:rgba(0,0,0,.28);backdrop-filter:blur(4px);z-index:2000;display:flex;align-items:flex-end;justify-content:center;animation:fi .16s ease;padding-bottom:env(safe-area-inset-bottom,0);}
 @keyframes fi{from{opacity:0}to{opacity:1}}
-.modal{background:var(--white);border-radius:var(--r2) var(--r2) 0 0;padding:22px 20px 38px;width:100%;max-width:520px;box-shadow:0 -8px 40px rgba(0,0,0,.1);animation:su .22s cubic-bezier(.3,0,.1,1) both;max-height:90vh;overflow-y:auto;}
+.modal{background:var(--white);border-radius:var(--r2) var(--r2) 0 0;padding:22px 20px 38px;width:100%;max-width:520px;box-shadow:0 -8px 40px rgba(0,0,0,.1);animation:su .22s cubic-bezier(.3,0,.1,1) both;max-height:85vh;overflow-y:auto;-webkit-overflow-scrolling:touch;position:relative;z-index:1001;}
 @keyframes su{from{transform:translateY(18px);opacity:0}to{transform:none;opacity:1}}
 .m-handle{width:34px;height:3px;background:var(--line2);border-radius:2px;margin:0 auto 18px;}
 .m-title{font-family:'Noto Serif TC',serif;font-weight:400;font-size:16px;color:var(--ink);margin-bottom:18px;letter-spacing:.04em;}
@@ -305,6 +295,7 @@ header{position:fixed;top:0;left:0;right:0;height:var(--hh);z-index:100;backgrou
 
 /* ── RESPONSIVE ── */
 @media(max-width:640px){
+  .tl-acts{opacity:1!important;}
   .tl-acts.desktop-only{display:none!important;}
   .sort-up,.sort-dn{color:var(--slate);border-color:var(--slate-lt);background:var(--slate-lt);}
   /* Mobile: .main is fixed between header and bottom nav */
@@ -742,7 +733,6 @@ function renderItinerary(trip,dc){
     const evTz=ev.timezone||tripTz;
     const tzAbbr=getTzAbbr(evTz);
     const tzNote=ev.time?fmtLocalTime(ev.time,evTz):null;
-    const menuId=`menu_${ev.id}`;
     return`<div class="tl-item" data-idx="${idx}" data-evid="${ev.id}"
         ondragover="tlDragOver(event)" ondrop="tlDrop(event,${idx})"
         ontouchstart="tlTouchStart(event,${idx})" ontouchmove="tlTouchMove(event,${idx})" ontouchend="tlTouchEnd(event,${idx})">
@@ -750,23 +740,15 @@ function renderItinerary(trip,dc){
       <div class="tl-dot"></div>
       ${ev.time?`<div class="tl-time">${ev.time} <span style="font-size:9px;color:var(--ink4);font-weight:400;margin-left:3px">${tzAbbr}</span></div>`:''}
       ${tzNote?`<div class="tl-tz-note">${tzNote}</div>`:''}
-      <div class="tl-card" style="position:relative">
-        <button class="tl-menu-btn" onclick="toggleEvMenu('${menuId}',event)" id="btn_${menuId}">···</button>
-        <div class="tl-menu-pop" id="${menuId}">
-          <button class="tl-menu-item" onclick="openEditEv('${ev.id}');closeEvMenu()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>編輯</button>
-          <button class="tl-menu-item" onclick="copyEv('${ev.id}');closeEvMenu()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>複製到…</button>
-          ${ev.location?`<button class="tl-menu-item" onclick="navTo('${esc(ev.location)}');closeEvMenu()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.4 7.05 11.5 7.35 11.76a1 1 0 0 0 1.3 0C12.95 21.5 20 15.4 20 10a8 8 0 0 0-8-8z"/></svg>導航</button>`:''}
-          <button class="tl-menu-item danger" onclick="delEv('${ev.id}');closeEvMenu()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>刪除</button>
-        </div>
+      <div class="tl-card">
         <div class="tl-top"><div><div class="tl-name">${esc(ev.name)}</div>${ev.location?`<div class="tl-loc">📍 ${esc(ev.location)}</div>`:''}</div><span class="tl-tag ${ti.c}">${ti.l}</span></div>
         ${ev.note?`<div class="tl-note">${esc(ev.note)}</div>`:''}
         ${renderPhotoStrip(ev.id,ev.photoUrls||[])}
-        <div class="tl-acts desktop-only">
+        <div class="tl-acts">
+          <button class="bsm mobile-only" onclick="moveEv(${idx},-1)">↑ 上移</button>
+          <button class="bsm mobile-only" onclick="moveEv(${idx},1)">↓ 下移</button>
           <button class="bsm" onclick="openEditEv('${ev.id}')">編輯</button>
+          <button class="bsm" onclick="copyEv('${ev.id}')">複製</button>
           ${ev.location?`<button class="bsm nav" onclick="navTo('${esc(ev.location)}')">🗺</button>`:''}
           <button class="bsm del" onclick="delEv('${ev.id}')">刪除</button>
         </div>
@@ -1446,34 +1428,6 @@ window.confirmResolve=(v)=>{
   document.getElementById('confirmDlg').style.display='none';
   if(confirmResolve)confirmResolve(v);
 };
-
-// ── EV MENU ──
-let openMenuId=null;
-window.toggleEvMenu=(id,e)=>{
-  e.stopPropagation();
-  const pop=document.getElementById(id);
-  const btn=document.getElementById('btn_'+id);
-  if(!pop||!btn)return;
-  const isOpen=pop.classList.contains('open');
-  closeEvMenu();
-  if(!isOpen){
-    // Position popup relative to button using fixed coords
-    const r=btn.getBoundingClientRect();
-    pop.style.top=(r.bottom+6)+'px';
-    pop.style.right=(window.innerWidth-r.right)+'px';
-    pop.classList.add('open');
-    btn.classList.add('open');
-    openMenuId=id;
-  }
-};
-window.closeEvMenu=()=>{
-  if(openMenuId){
-    document.getElementById(openMenuId)?.classList.remove('open');
-    document.getElementById('btn_'+openMenuId)?.classList.remove('open');
-    openMenuId=null;
-  }
-};
-document.addEventListener('click',()=>closeEvMenu());
 
 // ── INIT ──
 fetchRates();
