@@ -124,6 +124,7 @@ header{position:fixed;top:0;left:0;right:0;height:var(--hh);z-index:100;backgrou
 .tl-drag-handle{position:absolute;left:-36px;top:14px;font-size:14px;color:var(--ink4);cursor:grab;user-select:none;padding:2px 4px;border-radius:4px;transition:color .15s;}
 .tl-item:hover .tl-drag-handle{color:var(--ink3);}
 .tl-drag-handle:active{cursor:grabbing;}
+.tl-drag-hint{font-size:13px;color:var(--ink4);cursor:grab;user-select:none;opacity:.5;letter-spacing:-1px;}
 
 @media(pointer:coarse){.desktop-only{display:none!important;}}
 @media(pointer:fine){.mobile-only{display:none!important;}}
@@ -741,12 +742,10 @@ function renderItinerary(trip,dc){
       ${ev.time?`<div class="tl-time">${ev.time} <span style="font-size:9px;color:var(--ink4);font-weight:400;margin-left:3px">${tzAbbr}</span></div>`:''}
       ${tzNote?`<div class="tl-tz-note">${tzNote}</div>`:''}
       <div class="tl-card">
-        <div class="tl-top"><div><div class="tl-name">${esc(ev.name)}</div>${ev.location?`<div class="tl-loc">📍 ${esc(ev.location)}</div>`:''}</div><span class="tl-tag ${ti.c}">${ti.l}</span></div>
+        <div class="tl-top"><div><div class="tl-name">${esc(ev.name)}</div>${ev.location?`<div class="tl-loc">📍 ${esc(ev.location)}</div>`:''}</div><div style="display:flex;align-items:center;gap:6px;flex-shrink:0"><span class="tl-tag ${ti.c}">${ti.l}</span><span class="tl-drag-hint" title="長按拖拽排序">⠿</span></div></div>
         ${ev.note?`<div class="tl-note">${esc(ev.note)}</div>`:''}
         ${renderPhotoStrip(ev.id,ev.photoUrls||[])}
         <div class="tl-acts">
-          <button class="bsm mobile-only" onclick="moveEv(${idx},-1)">↑ 上移</button>
-          <button class="bsm mobile-only" onclick="moveEv(${idx},1)">↓ 下移</button>
           <button class="bsm" onclick="openEditEv('${ev.id}')">編輯</button>
           <button class="bsm" onclick="copyEv('${ev.id}')">複製</button>
           ${ev.location?`<button class="bsm nav" onclick="navTo('${esc(ev.location)}')">🗺</button>`:''}
