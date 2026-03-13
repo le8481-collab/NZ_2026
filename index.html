@@ -54,6 +54,11 @@ header{position:fixed;top:0;left:0;right:0;height:var(--hh);z-index:100;backgrou
 .trip-item:hover .ti-del{opacity:1;}
 .ti-del:hover{color:var(--rust);background:var(--rust-lt);}
 .sb-empty{text-align:center;padding:36px 12px;color:var(--ink4);font-size:12px;line-height:2.2;}
+.trip-section-lbl{font-size:10px;font-weight:600;color:var(--ink4);letter-spacing:.08em;text-transform:uppercase;padding:10px 4px 4px;margin-top:4px;}
+.trip-section-lbl:first-child{padding-top:2px;margin-top:0;}
+.trip-item.past{opacity:.55;}
+.trip-item.past .ti-name{color:var(--ink3);}
+.trip-status-dot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:5px;vertical-align:middle;position:relative;top:-1px;}
 
 /* ── MAIN ── */
 .main{overflow-y:auto;padding:24px 28px 24px;background:var(--bg);height:calc(100vh - var(--hh));}
@@ -616,15 +621,43 @@ function render(){
   renderMain();
   updateBN();
 }
+function tripStatus(t){
+  const now=new Date();
+  now.setHours(0,0,0,0);
+  if(!t.startDate)return'future';
+  const s=new Date(t.startDate);
+  const e=t.endDate?new Date(t.endDate):new Date(t.startDate);
+  e.setHours(23,59,59,999);
+  if(now>e)return'past';
+  if(now>=s)return'current';
+  return'future';
+}
 function renderList(el){
   if(!el)return;
   if(!S.trips.length){el.innerHTML=`<div class="sb-empty">尚無旅程<br>點上方新增</div>`;return;}
-  el.innerHTML=S.trips.map(t=>`
-    <div class="trip-item ${t.id===S.tid?'active':''}" onclick="selTrip('${t.id}')">
-      <div class="ti-name">${esc(t.name)}</div>
+  const groups={current:[],future:[],past:[]};
+  S.trips.forEach(t=>groups[tripStatus(t)].push(t));
+  // Sort: current by startDate, future by startDate asc, past by startDate desc
+  groups.current.sort((a,b)=>new Date(a.startDate)-new Date(b.startDate));
+  groups.future.sort((a,b)=>new Date(a.startDate)-new Date(b.startDate));
+  groups.past.sort((a,b)=>new Date(b.startDate)-new Date(a.startDate));
+  const card=t=>`
+    <div class="trip-item ${t.id===S.tid?'active':''} ${tripStatus(t)==='past'?'past':''}" onclick="selTrip('${t.id}')">
+      <div class="ti-name">${tripStatus(t)==='current'?`<span class="trip-status-dot" style="background:var(--sage)"></span>`:''}${esc(t.name)}</div>
       <div class="ti-meta">${fmtD(t.startDate,t.endDate)} · ${dCnt(t.startDate,t.endDate)}天</div>
       <button class="ti-del" onclick="event.stopPropagation();delTrip('${t.id}')">✕</button>
-    </div>`).join('');
+    </div>`;
+  let out='';
+  if(groups.current.length){
+    out+=`<div class="trip-section-lbl">進行中</div>${groups.current.map(card).join('')}`;
+  }
+  if(groups.future.length){
+    out+=`<div class="trip-section-lbl">即將出發</div>${groups.future.map(card).join('')}`;
+  }
+  if(groups.past.length){
+    out+=`<div class="trip-section-lbl">已結束</div>${groups.past.map(card).join('')}`;
+  }
+  el.innerHTML=out||`<div class="sb-empty">尚無旅程<br>點上方新增</div>`;
 }
 function updateBN(){
   ['itinerary','booking','expenses','notes'].forEach(s=>{
