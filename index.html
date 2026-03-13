@@ -109,9 +109,9 @@ header{position:fixed;top:0;left:0;right:0;height:var(--hh);z-index:100;backgrou
 /* ── DAY TABS ── */
 .day-tabs{display:flex;gap:6px;margin-bottom:18px;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;}
 .day-tabs::-webkit-scrollbar{display:none;}
-.day-tab{padding:6px 14px;border:1px solid var(--line2);background:var(--white);font-size:11px;font-weight:500;color:var(--ink3);cursor:pointer;border-radius:20px;font-family:'Noto Sans TC',sans-serif;transition:all .15s;white-space:nowrap;flex-shrink:0;}
-.day-tab:hover{border-color:var(--sage);color:var(--sage-dk);background:var(--sage-lt);}
-.day-tab.active{background:var(--sage);border-color:var(--sage);color:#fff;}
+.day-tab{padding:6px 14px;border:1px solid var(--line2);background:var(--white);font-size:11px;font-weight:500;color:var(--ink4);cursor:pointer;border-radius:20px;font-family:'Noto Sans TC',sans-serif;transition:all .15s;white-space:nowrap;flex-shrink:0;opacity:.6;}
+.day-tab:hover{border-color:var(--sage);color:var(--sage-dk);background:var(--sage-lt);opacity:1;}
+.day-tab.active{background:var(--sage);border-color:var(--sage);color:#fff;opacity:1;font-weight:600;}
 .day-tab.add-tab{border-style:dashed;color:var(--ink4);}
 .day-tab.add-tab:hover{border-color:var(--sage);color:var(--sage-dk);background:var(--sage-lt);}
 
@@ -974,8 +974,28 @@ function renderNotes(trip){
 }
 
 // ══ ACTIONS ══
-window.selTrip=id=>{S.tid=id;S.day=0;S.sec='itinerary';closeDrawer();render();};
-window.setDay=i=>{S.day=i;renderMain();};
+window.selTrip=id=>{S.tid=id;S.day=0;S.sec='itinerary';closeDrawer();render();
+  requestAnimationFrame(()=>{
+    const tabs=document.querySelector('.day-tabs');
+    if(tabs)tabs.scrollLeft=0;
+  });
+};
+window.setDay=i=>{
+  S.day=i;
+  renderMain();
+  // Scroll active tab to center
+  requestAnimationFrame(()=>{
+    const tabs=document.querySelector('.day-tabs');
+    const active=tabs?.querySelector('.day-tab.active');
+    if(tabs&&active){
+      const tLeft=tabs.getBoundingClientRect().left;
+      const aLeft=active.getBoundingClientRect().left;
+      const aCenter=aLeft+active.offsetWidth/2;
+      const tCenter=tLeft+tabs.offsetWidth/2;
+      tabs.scrollLeft+=aCenter-tCenter;
+    }
+  });
+};
 window.setSec=s=>{S.sec=s;if(s==='expenses'&&!Object.keys(rates).length)fetchRates();renderMain();updateBN();};
 window.navTo=loc=>window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(loc)}`,'_blank');
 window.addDay=()=>{const t=S.trips.find(t=>t.id===S.tid);if(!t)return;if(t.endDate){const d=new Date(t.endDate);d.setDate(d.getDate()+1);t.endDate=d.toISOString().split('T')[0];}if(!t.days)t.days={};save();};
