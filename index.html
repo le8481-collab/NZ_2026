@@ -87,14 +87,15 @@ header{position:fixed;top:0;left:0;right:0;height:var(--hh);z-index:100;backgrou
 
 /* ── WEATHER STRIP ── */
 
-.wx-strip-row{display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px;margin-bottom:16px;}
+.wx-strip-row{display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px;margin-bottom:16px;}
 .wx-strip-row::-webkit-scrollbar{display:none;}
-.wx-pill{flex-shrink:0;display:flex;align-items:center;gap:5px;background:var(--white);border:1px solid var(--line);border-radius:20px;padding:5px 10px;font-size:11px;color:var(--ink2);}
-.wx-pill.today{background:var(--sage-lt);border-color:var(--sage);color:var(--sage-dk);font-weight:500;}
-.wx-pill-icon{font-size:14px;line-height:1;}
-.wx-pill-day{color:var(--ink4);font-size:10px;}
-.wx-pill-temp{font-weight:400;}
-.wx-pill-lo{color:var(--ink4);font-size:11px;font-weight:400;}
+.wx-pill{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:4px;background:var(--white);border:1px solid var(--line);border-radius:14px;padding:10px 14px;min-width:64px;}
+.wx-pill.today{background:var(--sage-lt);border-color:var(--sage);}
+.wx-pill-day{font-size:12px;font-weight:600;color:var(--ink);letter-spacing:.01em;}
+.wx-pill.today .wx-pill-day{color:var(--sage-dk);}
+.wx-pill-icon{font-size:22px;line-height:1;margin:2px 0;}
+.wx-pill-temp{font-size:12px;font-weight:400;color:var(--ink2);}
+.wx-pill-lo{font-size:12px;color:var(--ink4);font-weight:400;}
 .wx-city-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
 .wx-city-inp{padding:5px 10px;border:1px solid var(--line2);border-radius:20px;font-size:12px;font-family:'Noto Sans TC',sans-serif;color:var(--ink);background:var(--bg);outline:none;width:130px;}
 .wx-city-inp:focus{border-color:var(--sage);}
@@ -655,7 +656,12 @@ function renderMain(){
     if(trip.wxCity&&wx&&wx.days){
       const wDays=wx.days.map((d,i)=>{
         const lbl=i===0?'今天':d.dt.toLocaleDateString('zh-TW',{month:'numeric',day:'numeric'});
-        return`<div class="wx-pill ${i===0?'today':''}"><span class="wx-pill-icon">${d.icon}</span><span class="wx-pill-day">${lbl}</span><span class="wx-pill-temp">${Math.round(d.hi)}°</span><span class="wx-pill-lo">/ ${Math.round(d.lo)}°</span></div>`;
+        return`<div class="wx-pill ${i===0?'today':''}">
+          <div class="wx-pill-day">${lbl}</div>
+          <div class="wx-pill-icon">${d.icon}</div>
+          <div class="wx-pill-temp">${Math.round(d.hi)}°</div>
+          <div class="wx-pill-lo">${Math.round(d.lo)}°</div>
+        </div>`;
       }).join('');
       const displayCity=wx.cityName||trip.wxCity;
       wxHtml=`<div class="wx-city-row"><span style="font-size:11px;color:var(--ink3)">📍 ${esc(displayCity)}</span><button onclick="openEditCity()" style="background:none;border:none;font-size:11px;color:var(--ink4);cursor:pointer;padding:0 4px">更換</button></div><div class="wx-strip-row">${wDays}</div>`;
