@@ -124,7 +124,7 @@ header{position:fixed;top:0;left:0;right:0;height:var(--hh);z-index:100;backgrou
 .tl-drag-handle{position:absolute;left:-36px;top:14px;font-size:14px;color:var(--ink4);cursor:grab;user-select:none;padding:2px 4px;border-radius:4px;transition:color .15s;}
 .tl-item:hover .tl-drag-handle{color:var(--ink3);}
 .tl-drag-handle:active{cursor:grabbing;}
-.tl-drag-hint{font-size:13px;color:var(--ink4);cursor:grab;user-select:none;opacity:.5;letter-spacing:-1px;}
+.tl-drag-hint{color:var(--ink4);cursor:grab;user-select:none;-webkit-user-select:none;opacity:.5;display:flex;align-items:center;-webkit-touch-callout:none;}
 
 @media(pointer:coarse){.desktop-only{display:none!important;}}
 @media(pointer:fine){.mobile-only{display:none!important;}}
@@ -742,7 +742,7 @@ function renderItinerary(trip,dc){
       ${ev.time?`<div class="tl-time">${ev.time} <span style="font-size:9px;color:var(--ink4);font-weight:400;margin-left:3px">${tzAbbr}</span></div>`:''}
       ${tzNote?`<div class="tl-tz-note">${tzNote}</div>`:''}
       <div class="tl-card">
-        <div class="tl-top"><div><div class="tl-name">${esc(ev.name)}</div>${ev.location?`<div class="tl-loc">📍 ${esc(ev.location)}</div>`:''}</div><div style="display:flex;align-items:center;gap:6px;flex-shrink:0"><span class="tl-tag ${ti.c}">${ti.l}</span><span class="tl-drag-hint" title="長按拖拽排序">⠿</span></div></div>
+        <div class="tl-top"><div><div class="tl-name">${esc(ev.name)}</div>${ev.location?`<div class="tl-loc">📍 ${esc(ev.location)}</div>`:''}</div><div style="display:flex;align-items:center;gap:6px;flex-shrink:0"><span class="tl-tag ${ti.c}">${ti.l}</span><span class="tl-drag-hint" title="長按拖拽排序"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block"><circle cx="4.5" cy="2.5" r="1.2" fill="currentColor"/><circle cx="9.5" cy="2.5" r="1.2" fill="currentColor"/><circle cx="4.5" cy="7" r="1.2" fill="currentColor"/><circle cx="9.5" cy="7" r="1.2" fill="currentColor"/><circle cx="4.5" cy="11.5" r="1.2" fill="currentColor"/><circle cx="9.5" cy="11.5" r="1.2" fill="currentColor"/></svg></span></div></div>
         ${ev.note?`<div class="tl-note">${esc(ev.note)}</div>`:''}
         ${renderPhotoStrip(ev.id,ev.photoUrls||[])}
         <div class="tl-acts">
