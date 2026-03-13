@@ -86,19 +86,19 @@ header{position:fixed;top:0;left:0;right:0;height:var(--hh);z-index:100;backgrou
 .trip-tz{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;background:var(--slate-lt);color:var(--slate);font-size:10px;font-weight:500;margin-top:2px;}
 
 /* ── WEATHER STRIP ── */
-.weather-strip{display:flex;gap:8px;margin-bottom:20px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch;}
-.weather-strip::-webkit-scrollbar{display:none;}
-.wx-card{flex-shrink:0;background:var(--white);border:1px solid var(--line);border-radius:var(--r2);padding:10px 14px;min-width:68px;text-align:center;box-shadow:var(--sh0);}
-.wx-card.today{background:var(--sage-lt);border-color:var(--sage);}
-.wx-day{font-size:10px;color:var(--ink3);margin-bottom:4px;letter-spacing:.04em;}
-.wx-icon{font-size:20px;margin-bottom:4px;}
-.wx-temp{font-size:13px;font-weight:500;color:var(--ink);}
-.wx-lo{font-size:10px;color:var(--ink4);}
-.wx-load{padding:14px 18px;background:var(--white);border:1px solid var(--line);border-radius:var(--r2);font-size:12px;color:var(--ink4);display:flex;align-items:center;gap:8px;}
-.wx-city-row{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
-.wx-city-inp{padding:6px 12px;border:1px solid var(--line2);border-radius:20px;font-size:12px;font-family:'Noto Sans TC',sans-serif;color:var(--ink);background:var(--bg);outline:none;width:140px;}
+
+.wx-strip-row{display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px;margin-bottom:16px;}
+.wx-strip-row::-webkit-scrollbar{display:none;}
+.wx-pill{flex-shrink:0;display:flex;align-items:center;gap:5px;background:var(--white);border:1px solid var(--line);border-radius:20px;padding:5px 10px;font-size:11px;color:var(--ink2);}
+.wx-pill.today{background:var(--sage-lt);border-color:var(--sage);color:var(--sage-dk);font-weight:500;}
+.wx-pill-icon{font-size:14px;line-height:1;}
+.wx-pill-day{color:var(--ink4);font-size:10px;}
+.wx-pill-temp{font-weight:500;}
+.wx-pill-lo{color:var(--ink4);font-size:10px;}
+.wx-city-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.wx-city-inp{padding:5px 10px;border:1px solid var(--line2);border-radius:20px;font-size:12px;font-family:'Noto Sans TC',sans-serif;color:var(--ink);background:var(--bg);outline:none;width:130px;}
 .wx-city-inp:focus{border-color:var(--sage);}
-.wx-city-btn{padding:6px 12px;border:1px solid var(--sage);border-radius:20px;background:var(--sage-lt);font-size:12px;color:var(--sage-dk);cursor:pointer;font-family:'Noto Sans TC',sans-serif;}
+.wx-city-btn{padding:5px 10px;border:1px solid var(--sage);border-radius:20px;background:var(--sage-lt);font-size:12px;color:var(--sage-dk);cursor:pointer;font-family:'Noto Sans TC',sans-serif;}
 
 /* ── SECTION SWITCHER ── */
 .sec-bar{display:flex;gap:0;margin-bottom:22px;border:1px solid var(--line2);border-radius:var(--r);overflow:hidden;width:fit-content;}
@@ -575,7 +575,7 @@ const avEl=(n,sz=20,trip=null)=>{
   if(m?.avatar)return`<img src="${m.avatar}" style="width:${sz}px;height:${sz}px;border-radius:50%;object-fit:cover;flex-shrink:0" alt="${n}"/>`;
   return`<div style="width:${sz}px;height:${sz}px;border-radius:50%;background:${avc(n)};display:inline-flex;align-items:center;justify-content:center;font-size:${Math.round(sz*.4)}px;font-weight:600;color:#fff;flex-shrink:0">${(n||'?')[0].toUpperCase()}</div>`;
 };
-const TYPES={transport:{l:'交通',e:'🚆',c:'tag-t'},food:{l:'餐廳',e:'🍜',c:'tag-f'},attraction:{l:'景點',e:'📍',c:'tag-a'},hotel:{l:'住宿',e:'🏨',c:'tag-h'},other:{l:'其他',e:'✦',c:'tag-o'}};
+const TYPES={transport:{l:'交通',e:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3H8L6 7h12l-2-4z"/><circle cx="7" cy="17" r="1.5"/><circle cx="17" cy="17" r="1.5"/></svg>',c:'tag-t'},food:{l:'餐廳',e:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg>',c:'tag-f'},attraction:{l:'景點',e:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.4 7.05 11.5 7.35 11.76a1 1 0 0 0 1.3 0C12.95 21.5 20 15.4 20 10a8 8 0 0 0-8-8z"/></svg>',c:'tag-a'},hotel:{l:'住宿',e:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 22V8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14"/><path d="M2 22h20"/><path d="M7 10h2v4H7z"/><path d="M15 10h2v4h-2z"/><path d="M9 22v-4a2 2 0 0 1 4 0v4"/></svg>',c:'tag-h'},other:{l:'其他',e:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>',c:'tag-o'}};
 const ECATS=[{k:'food',e:'🍜',l:'餐飲'},{k:'trans',e:'🚆',l:'交通'},{k:'hotel',e:'🏨',l:'住宿'},{k:'ticket',e:'🎡',l:'門票'},{k:'shop',e:'🛍',l:'購物'},{k:'other',e:'📎',l:'其他'}];
 const BKTYPES=[{k:'flight',e:'✈️',l:'機票'},{k:'hotel',e:'🏨',l:'住宿'},{k:'car',e:'🚗',l:'租車'},{k:'other',e:'📋',l:'其他'}];
 const ecat=k=>ECATS.find(c=>c.k===k)||ECATS[5];
@@ -655,10 +655,10 @@ function renderMain(){
     if(trip.wxCity&&wx&&wx.days){
       const wDays=wx.days.map((d,i)=>{
         const lbl=i===0?'今天':d.dt.toLocaleDateString('zh-TW',{month:'numeric',day:'numeric'});
-        return`<div class="wx-card ${i===0?'today':''}"><div class="wx-day">${lbl}</div><div class="wx-icon">${d.icon}</div><div class="wx-temp">${Math.round(d.hi)}°</div><div class="wx-lo">${Math.round(d.lo)}°</div></div>`;
+        return`<div class="wx-pill ${i===0?'today':''}"><span class="wx-pill-icon">${d.icon}</span><span class="wx-pill-day">${lbl}</span><span class="wx-pill-temp">${Math.round(d.hi)}°</span><span class="wx-pill-lo">/ ${Math.round(d.lo)}°</span></div>`;
       }).join('');
       const displayCity=wx.cityName||trip.wxCity;
-      wxHtml=`<div class="wx-city-row"><span style="font-size:11px;color:var(--ink3)">📍 ${esc(displayCity)} · 未來7天</span><button onclick="openEditCity()" style="background:none;border:none;font-size:11px;color:var(--ink4);cursor:pointer;padding:0 4px">更換城市</button></div><div class="weather-strip">${wDays}</div>`;
+      wxHtml=`<div class="wx-city-row"><span style="font-size:11px;color:var(--ink3)">📍 ${esc(displayCity)}</span><button onclick="openEditCity()" style="background:none;border:none;font-size:11px;color:var(--ink4);cursor:pointer;padding:0 4px">更換</button></div><div class="wx-strip-row">${wDays}</div>`;
     } else if(trip.wxCity&&wx&&wx.error){
       wxHtml=`<div class="wx-city-row" style="display:flex;gap:8px;align-items:center;margin-bottom:14px"><span style="font-size:12px;color:var(--rust)">⚠️ 找不到「${esc(trip.wxCity)}」的天氣，請確認城市英文名稱</span><button onclick="openEditCity()" style="background:none;border:1px solid var(--line2);border-radius:20px;font-size:11px;color:var(--ink3);cursor:pointer;padding:3px 10px">重新輸入</button></div>`;
     } else {
@@ -668,12 +668,14 @@ function renderMain(){
 
   el.innerHTML=`
     <div class="trip-head">
-      <div>
+      <div style="flex:1;min-width:0">
         <div class="trip-title">${esc(trip.name)}</div>
         <div class="trip-meta">📅 ${fmtD(trip.startDate,trip.endDate)} &nbsp;·&nbsp; ${dc}天${dc-1}夜</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0">
+        <button class="b-outline" onclick="openEditTripModal()">編輯</button>
         <div class="trip-tz">🕐 ${tzAbbr} · ${TIMEZONES.find(t=>t.code===tz)?.label||tz}</div>
       </div>
-      <button class="b-outline" onclick="openEditTripModal()">編輯</button>
     </div>
     <div class="sec-bar">
       <button class="sec-btn ${S.sec==='itinerary'?'active':''}" onclick="setSec('itinerary')">行程</button>
@@ -742,7 +744,7 @@ function renderItinerary(trip,dc){
       ${ev.time?`<div class="tl-time">${ev.time} <span style="font-size:9px;color:var(--ink4);font-weight:400;margin-left:3px">${tzAbbr}</span></div>`:''}
       ${tzNote?`<div class="tl-tz-note">${tzNote}</div>`:''}
       <div class="tl-card">
-        <div class="tl-top"><div><div class="tl-name">${esc(ev.name)}</div>${ev.location?`<div class="tl-loc">📍 ${esc(ev.location)}</div>`:''}</div><div style="display:flex;align-items:center;gap:6px;flex-shrink:0"><span class="tl-tag ${ti.c}">${ti.l}</span><span class="tl-drag-hint" title="長按拖拽排序"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block"><circle cx="4.5" cy="2.5" r="1.2" fill="currentColor"/><circle cx="9.5" cy="2.5" r="1.2" fill="currentColor"/><circle cx="4.5" cy="7" r="1.2" fill="currentColor"/><circle cx="9.5" cy="7" r="1.2" fill="currentColor"/><circle cx="4.5" cy="11.5" r="1.2" fill="currentColor"/><circle cx="9.5" cy="11.5" r="1.2" fill="currentColor"/></svg></span></div></div>
+        <div class="tl-top"><div><div class="tl-name">${esc(ev.name)}</div>${ev.location?`<div class="tl-loc">📍 ${esc(ev.location)}</div>`:''}</div><div style="display:flex;align-items:center;gap:6px;flex-shrink:0"><span class="tl-tag ${ti.c}" style="display:inline-flex;align-items:center;gap:4px">${ti.e}${ti.l}</span><span class="tl-drag-hint" title="長按拖拽排序"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block"><circle cx="4.5" cy="2.5" r="1.2" fill="currentColor"/><circle cx="9.5" cy="2.5" r="1.2" fill="currentColor"/><circle cx="4.5" cy="7" r="1.2" fill="currentColor"/><circle cx="9.5" cy="7" r="1.2" fill="currentColor"/><circle cx="4.5" cy="11.5" r="1.2" fill="currentColor"/><circle cx="9.5" cy="11.5" r="1.2" fill="currentColor"/></svg></span></div></div>
         ${ev.note?`<div class="tl-note">${esc(ev.note)}</div>`:''}
         ${renderPhotoStrip(ev.id,ev.photoUrls||[])}
         <div class="tl-acts">
